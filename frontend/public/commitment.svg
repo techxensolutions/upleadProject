@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="56px" height="56px" viewBox="0 0 56 56" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>Icons-skip-delivery</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons-skip-delivery" stroke="none" stroke-width="1" fill="none" fillRule="evenodd">
+        <g id="Group-9" transform="translate(16.000000, 29.000000)">
+            <g id="Group-6" transform="translate(9.000000, 0.000000)" stroke="#002684" stroke-width="1.5">
+                <path d="M21.0714286,4.5 L0.5,4.5" id="Path"></path>
+                <polyline id="Path" stroke-linejoin="round" points="17 9 21.5 4.5 17 0"></polyline>
+            </g>
+            <rect id="Rectangle-Copy-5" fill="#002684" x="0" y="1" width="7" height="7" rx="1"></rect>
+        </g>
+        <path d="M38.4838867,40 L8.5,40 C8.22385763,40 8,39.7761424 8,39.5 L8,10 C8,8.8954305 8.8954305,8 10,8 L46,8 C47.1045695,8 48,8.8954305 48,10 L48,28.8740234" id="Path" stroke="#002684" stroke-width="1.5" stroke-linecap="round"></path>
+        <path d="M10,8 L46,8 C47.1045695,8 48,8.8954305 48,10 L48,17 L8,17 L8,10 C8,8.8954305 8.8954305,8 10,8 Z" id="Rectangle" fill="#002684"></path>
+    </g>
+</svg>

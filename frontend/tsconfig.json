@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "noEmit": true,
+    "incremental": true,
+    "module": "esnext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+, "pages/dashboard/free-trail/index.jsx", "pages/dashboard/settings/index.jsx", "SharedComponents/ErrorBlock.jsx", "SharedComponents/TableLoader.jsx", "SharedComponents/DeleteModal.jsx", "SharedComponents/CountryList.js", "pages/dashboard/standard/_components/data.js"  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
