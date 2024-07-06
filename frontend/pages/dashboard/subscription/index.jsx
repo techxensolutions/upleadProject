@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import api from "@/redux/api";
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
 import DashboardPage from "../index";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -23,17 +23,23 @@ export default function DashboardSubscription() {
     typeof window != "undefined" &&
     JSON.parse(localStorage.getItem("userToken"));
 
-  const { isFetching, data, isLoading, error } =
-    api.adminApis.useGetAllFilesQuery("");
+  const [getFilesByPlan, { isFetching, data, isLoading, error }] =
+    api.adminApis.useGetFilesByPlanMutation("");
 
   useEffect(() => {
     if (!isFetching && !isLoading) {
-      const subscriptionData = data?.filter((item) => {
-        return item?.plans.includes(loggedInUser.subscription.toLowerCase());
-      });
-      setFilteredData(subscriptionData);
+      getFilesByPlan({
+        plan: loggedInUser.subscription.toLowerCase(),
+        userId: loggedInUser._id,
+      }).unwrap();
+      setFilteredData(data?.data);
     }
-  }, [data, isFetching, isLoading, searchQuery]);
+  }, []);
+  useEffect(() => {
+    if (data) {
+      setFilteredData(data?.data);
+    }
+  }, [data, searchQuery]);
   const [
     saveSearchQuery,
     { isSearchFetching, data: searchData, isSearchLoading, isSearcherror },
@@ -52,6 +58,8 @@ export default function DashboardSubscription() {
       } catch (error) {
         console.error("Error saving search query:", error);
       }
+    } else {
+      setFilteredData(data?.data);
     }
   };
   const filterData = (filteredData, searchQuery) => {
@@ -144,16 +152,16 @@ export default function DashboardSubscription() {
               <Table className="w-full" cellPadding={14}>
                 <TableHead className="w-full sticky top-0 border-b bg-white border-y-zinc-200">
                   <TableRow className="grid grid-cols-3 w-full md:table-row text-stone-600 font-[700]">
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       S/N
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       File Name
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Url
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Action
                     </TableCell>
                   </TableRow>
@@ -167,16 +175,18 @@ export default function DashboardSubscription() {
                       .map((each, index) => (
                         <TableRow
                           key={index}
-                          className="text-slate-500  font-semi-bold"
+                          className="text-slate-500  font-semi-medium single-line-text"
                         >
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell>
+                            {(page - 1) * rowsPerPage + index + 1}
+                          </TableCell>
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.filename}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.url}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             <button
                               type="button"
                               onClick={() =>
@@ -195,7 +205,7 @@ export default function DashboardSubscription() {
             </TableContainer>
             <div className=" !w-full">
               <List className="!flex-1 first-letter:flex items-center max-md:max-w-[calc(100vw-2.2rem)] w-[500px] bottom-4 bg-white mb-4 ml-auto  md:max-w-max rounded-md  mt-8 p-1">
-                {items.map(({ page, type, selected, ...item }, index) => {
+                {items?.map(({ page, type, selected, ...item }, index) => {
                   let children = null;
 
                   if (type === "start-ellipsis" || type === "end-ellipsis") {

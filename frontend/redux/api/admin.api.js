@@ -80,12 +80,27 @@ const api = createApi({
       transformResponse: (response) => response?.searchQueries,
     }),
 
+    deleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `user/${userId}`,
+        method: "DELETE",
+      }),
+    }),
     getAllUsers: builder.query({
       query: () => "user/getAllUsers",
     }),
-    createCsvFile: builder.mutation({
+
+    //csv
+    createUserCsvFile: builder.mutation({
       query: (credentials) => ({
-        url: "csvFile/create",
+        url: "csvFile/createUserCsv",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    getFilesByPlan: builder.mutation({
+      query: (credentials) => ({
+        url: "csvFile/by-plan",
         method: "POST",
         body: credentials,
       }),
@@ -94,19 +109,11 @@ const api = createApi({
       query: () => "csvFile/getAllFiles",
       transformResponse: (response) => response?.data,
     }),
-
-    deleteProperty: builder.mutation({
-      query: (propertyId) => ({
-        url: `property/${propertyId}`,
-        method: "DELETE",
-      }),
-    }),
-
-    addProperty: builder.mutation({
-      query: (property) => ({
-        url: "property/create",
+    createCsvFile: builder.mutation({
+      query: (credentials) => ({
+        url: "csvFile/create",
         method: "POST",
-        body: property,
+        body: credentials,
       }),
     }),
 
@@ -121,6 +128,12 @@ const api = createApi({
     getAllFormSubmissions: builder.query({
       query: () => "form/form-submissions",
       transformResponse: (response) => response?.data,
+    }),
+    deleteFormSubmission: builder.mutation({
+      query: (formId) => ({
+        url: `form/${formId}`,
+        method: "DELETE",
+      }),
     }),
   }),
 });

@@ -1,9 +1,8 @@
 "use client";
-
 import { Dialog } from "@mui/material";
 import { useEffect } from "react";
 import LoadingButton from "@/SharedComponents/LoadingButton";
-
+import toast from "react-hot-toast";
 export default function DeleteModal({
   modalOpen,
   setModalOpen,
@@ -20,6 +19,7 @@ export default function DeleteModal({
 
   useEffect(() => {
     if (isSucessful) {
+      toast.success(" Deleted Successfully");
       const timeout = setTimeout(() => {
         handleModalClose();
         clearTimeout(timeout);
@@ -53,10 +53,6 @@ export default function DeleteModal({
       </button>
 
       <div className="card min-h-[350px] snap-start snap-always h-full duration-300 min-w-[270px] max-w-[350px] grid grid-rows-[5fr_4fr] rounded-md overflow-hidden">
-        {/* <figure className="relative rounded-md overflow-hidden bg-test">
-            <Image fill alt="success modal" className="object-cover object-center" src="/images/study-abroad/success-image.png" />
-          </figure> */}
-
         <div className="self-end flex text-center flex-col gap-y-2 justify-between gap-1 bg-white">
           <h3 className="font-semibold text-md mt-2 mb-1 text-stone-600">
             Attention
@@ -70,7 +66,7 @@ export default function DeleteModal({
             loading={loading}
             sucess={isSucessful}
             successText="Sucessful!"
-            className="text-white text-center hover:bg-red-400 active:bg-red-600 duration-300 w-full text-base font-medium leading-6 whitespace-nowrap justify-center items-center bg-red-500 max-w-full mt-5 px-16 py-3 rounded-lg self-start max-md:px-5"
+            className="text-white text-center hover:bg-[#00A0DF] active:[#00A0DF] duration-300 w-full text-base font-medium leading-6 whitespace-nowrap justify-center items-center bg-[#00A0DF] max-w-full mt-5 px-16 py-3 rounded-lg self-start max-md:px-5"
           >
             Delete
           </LoadingButton>

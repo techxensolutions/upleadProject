@@ -117,7 +117,6 @@ const DashboardNav = memo(() => {
             />
           </figure> */}
           <Select
-            // displayEmpty
             itemID="location"
             defaultValue={0}
             value={0}
@@ -129,13 +128,7 @@ const DashboardNav = memo(() => {
             <MenuItem className="!p-0 !hidden" value={0}>
               {loggedInUser?.firstName + " " + loggedInUser?.lastName}
             </MenuItem>
-            {/* <MenuItem
-              onClick={handleNaviageToSettings}
-              className="font-semibold text-zinc-600"
-              value={10}
-            >
-              Settings
-            </MenuItem> */}
+
             <MenuItem
               onClick={handleSignOut}
               className="font-semibold text-zinc-600"

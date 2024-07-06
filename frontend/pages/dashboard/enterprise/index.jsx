@@ -28,6 +28,7 @@ export default function DashboardEnterprise() {
     data: getAllUsers,
     isLoading,
     error,
+    refetch,
   } = api.adminApis.useGetAllUsersQuery("");
   const users = getAllUsers?.users.filter(
     (user) => user.subscription.toLowerCase() === "enterprise"
@@ -40,7 +41,7 @@ export default function DashboardEnterprise() {
       isSuccess: isDeleteSuccess,
       reset,
     },
-  ] = api.adminApis.useDeletePropertyMutation();
+  ] = api.adminApis.useDeleteUserMutation();
 
   const handleFilterTextInput = (e) => {
     e.preventDefault();
@@ -49,7 +50,7 @@ export default function DashboardEnterprise() {
   };
 
   const initiateDelete = (item) => {
-    setItemToDelete({ id: item?.schoolId, name: `${item?.info?.name}` });
+    setItemToDelete({ id: item?._id, name: `${item?.email}` });
     setIsDeleteModalOpen(true);
   };
   const handleDelete = (id) => {
@@ -76,6 +77,13 @@ export default function DashboardEnterprise() {
       return searchString.includes(searchQuery.toLowerCase());
     });
   };
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      refetch();
+      setIsDeleteModalOpen(false);
+      reset();
+    }
+  }, [isDeleteSuccess, refetch, reset]);
   return (
     <DashboardPage className="flex justify-center items-center">
       <main className="p-3 md:p-3 lg:p-4 xl:p-6">
@@ -113,29 +121,6 @@ export default function DashboardEnterprise() {
                   />
                 </span>
               </label>
-
-              {/* <div className="lg:ml-auto">
-                <Link
-                  href="/adminPanel/property/add"
-                  className="bg-[#FF4512] max-w-max  flex flex-row font-medium items-center gap-1.5 rounded-lg px-6 py-2.5 shadow-md text-white mt-4"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 4.5v15m7.5-7.5h-15"
-                    />
-                  </svg>
-                  Add New Property
-                </Link>
-              </div> */}
             </div>
 
             <div className="flex w-full flex-row gap-x-4 md:gap-3 lg:gap-4 h-max"></div>
@@ -148,27 +133,27 @@ export default function DashboardEnterprise() {
               <Table className="w-full" cellPadding={14}>
                 <TableHead className="w-full sticky top-0 border-b bg-white border-y-zinc-200">
                   <TableRow className="grid grid-cols-3 w-full md:table-row text-stone-600 font-[700]">
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       S/N
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       First Name
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Last Name
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Email
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Subscription
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       View Search Queries
                     </TableCell>
-                    {/* <TableCell className="text-stone-600 font-semibold">
-                      Actions
-                    </TableCell> */}
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
+                      Action
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 {isFetching ? (
@@ -180,22 +165,24 @@ export default function DashboardEnterprise() {
                       .map((each, index) => (
                         <TableRow
                           key={index}
-                          className="text-slate-500  font-semi-bold"
+                          className="text-slate-500  font-semi-medium single-line-text"
                         >
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                         <TableCell>
+                          {(page - 1) * rowsPerPage + index + 1}
+                        </TableCell>
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.firstName}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.lastName}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.email}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.subscription}
                           </TableCell>
-                          <TableCell className=" text-zinc-600 tracking-wide font-medium">
+                          <TableCell className=" text-zinc-600 tracking-wide font-medium single-line-text">
                             <Link
                               className="flex gap-3 items-center"
                               href={`/dashboard/user-search-queries?id=${each._id}`}
@@ -220,49 +207,7 @@ export default function DashboardEnterprise() {
                               <p className="underline">Click here</p>
                             </Link>
                           </TableCell>
-                          {/* <TableCell className="gap-1.5 lg:gap-2 xl:gap-2.5">
-                            <Link
-                              href={`/adminPanel/property/add?id=${each._id}&action=view`}
-                              className="!inline mx-1"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="21"
-                                height="20"
-                                viewBox="0 0 21 20"
-                                fill="none"
-                                className="!inline"
-                              >
-                                <path
-                                  d="M18.167 7.5L18.167 2.5M18.167 2.5H13.167M18.167 2.5L11.5003 9.16667M9.00033 4.16667H7.16699C5.76686 4.16667 5.0668 4.16667 4.53202 4.43915C4.06161 4.67883 3.67916 5.06129 3.43948 5.53169C3.16699 6.06647 3.16699 6.76654 3.16699 8.16667V13.5C3.16699 14.9001 3.16699 15.6002 3.43948 16.135C3.67916 16.6054 4.06161 16.9878 4.53202 17.2275C5.0668 17.5 5.76686 17.5 7.16699 17.5H12.5003C13.9005 17.5 14.6005 17.5 15.1353 17.2275C15.6057 16.9878 15.9882 16.6054 16.2278 16.135C16.5003 15.6002 16.5003 14.9001 16.5003 13.5V11.6667"
-                                  stroke="#818181"
-                                  strokeWidth="1.66667"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                            <Link
-                              href={`/adminPanel/property/add?id=${each._id}&action=update`}
-                              className="!inline mx-1"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="21"
-                                height="20"
-                                viewBox="0 0 21 20"
-                                fill="none"
-                                className="!inline"
-                              >
-                                <path
-                                  d="M3.06337 15.0973C3.10165 14.7527 3.1208 14.5804 3.17293 14.4194C3.21918 14.2765 3.28453 14.1405 3.3672 14.0152C3.46038 13.8739 3.58296 13.7513 3.82811 13.5061L14.8334 2.5009C15.7538 1.58043 17.2462 1.58043 18.1667 2.5009C19.0872 3.42138 19.0872 4.91376 18.1667 5.83424L7.16144 16.8395C6.91629 17.0846 6.79371 17.2072 6.65241 17.3004C6.52704 17.383 6.39108 17.4484 6.2482 17.4946C6.08717 17.5468 5.91488 17.5659 5.57031 17.6042L2.75 17.9176L3.06337 15.0973Z"
-                                  stroke="#818181"
-                                  strokeWidth="1.66667"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                              </svg>
-                            </Link>
+                          <TableCell className="gap-1.5 lg:gap-2 xl:gap-2.5">
                             <button
                               onClick={() => initiateDelete(each)}
                               className="!inline mx-1"
@@ -284,7 +229,7 @@ export default function DashboardEnterprise() {
                                 />
                               </svg>
                             </button>
-                          </TableCell> */}
+                          </TableCell>
                         </TableRow>
                       ))}
                   </TableBody>
@@ -293,7 +238,7 @@ export default function DashboardEnterprise() {
             </TableContainer>
             <div className=" !w-full">
               <List className="!flex-1 first-letter:flex items-center max-md:max-w-[calc(100vw-2.2rem)] w-[500px] bottom-4 bg-white mb-4 ml-auto  md:max-w-max rounded-md  mt-8 p-1">
-                {items.map(({ page, type, selected, ...item }, index) => {
+                {items?.map(({ page, type, selected, ...item }, index) => {
                   let children = null;
 
                   if (type === "start-ellipsis" || type === "end-ellipsis") {

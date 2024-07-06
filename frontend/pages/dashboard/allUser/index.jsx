@@ -29,9 +29,7 @@ export default function DashboardOverview() {
     error,
     refetch,
   } = api.adminApis.useGetAllUsersQuery("");
-  const users = getAllUsers?.users.filter(
-    (user) => user.subscription.toLowerCase() === "free trial"
-  );
+  const users = getAllUsers?.users
   const [
     deleteTrigger,
     {

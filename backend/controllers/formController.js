@@ -35,7 +35,33 @@ const getAllFormSubmissions = async (req, res) => {
   }
 };
 
+const deleteFormSubmission = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedFormSubmission = await FormSubmission.findByIdAndDelete(id);
+
+    if (!deletedFormSubmission) {
+      return res.status(404).json({
+        success: false,
+        message: "Form submission not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Form submission deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting form submission:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete form submission",
+      error: error.message,
+    });
+  }
+};
 module.exports = {
   createFormSubmission,
   getAllFormSubmissions,
+  deleteFormSubmission,
 };

@@ -1,10 +1,27 @@
 import Image from "next/image";
 import Link from "next/link";
-import { memo } from "react";
+import { memo, useState, useEffect } from "react";
 import { NavList } from "./NavList";
-import { navRoutes } from "../data";
+import { adminNavRoutes, userNavRoutes } from "../data";
 
 const MobileNavMenuModal = memo(({ isOpen, setIsOpen }) => {
+  const [navRoutes, setNavRoutes] = useState([]);
+
+  useEffect(() => {
+    const fetchNavRoutes = async () => {
+      const loggedInUser =
+        typeof window !== "undefined" &&
+        JSON.parse(localStorage.getItem("userToken"));
+
+      const isAdmin = loggedInUser?.role === "admin";
+
+      const routes = isAdmin ? adminNavRoutes : userNavRoutes;
+      setNavRoutes(routes);
+    };
+
+    fetchNavRoutes();
+  }, []);
+
   if (isOpen) {
     return (
       <aside className="bg-white z-[1] fixed md:hidden bottom-0 left-0 w-full h-full border border-r-slate-200">
@@ -29,23 +46,24 @@ const MobileNavMenuModal = memo(({ isOpen, setIsOpen }) => {
         </button>
         <Link
           href="/"
-          className="relative px-4 py-3 flex flex-row  max-w-max items-center gap-x-2"
+          className="relative px-4 flex flex-row max-w-max items-center gap-x-2"
         >
           <Image
             width={150}
-            height={40}
+            height={150}
             loading="lazy"
-            src="/images/logo-and-text.svg"
+            src="/logo1.png"
             className=""
-            alt="Study Abroad"
+            alt="Logo"
           />
-          {/* <h1 className="text-2xl font-semibold -mb-2 text-slate-800">GT Western</h1> */}
         </Link>
 
         <NavList setIsOpen={setIsOpen} route={navRoutes} />
       </aside>
     );
   }
+
+  return null;
 });
 
 MobileNavMenuModal.displayName = "MobileNavMenuModal";

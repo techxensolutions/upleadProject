@@ -10,13 +10,19 @@
 
 body {
 }
-.css-h4y409-MuiList-root{
+.css-h4y409-MuiList-root {
   margin-top: 20px !important;
   display: flex !important;
- float: right !important;
+  float: right !important;
 }
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.single-line-text {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }

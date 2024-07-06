@@ -8,7 +8,6 @@ const {
   getAllUsers,
   getSingleUser,
   login,
-  logout,
   deleteUser,
   updateUser,
   updatePassword,
@@ -27,7 +26,6 @@ userRoutes.post("/:userId/saveSearchQuery", catchAsync(saveSearchQuery));
 userRoutes.get("/user-search-queries/:userId", catchAsync(fetchSearchQueries));
 userRoutes.get("/getUser/:id", catchAsync(getSingleUser));
 userRoutes.post("/login", catchAsync(login));
-userRoutes.get("/logout", catchAsync(logout));
 userRoutes.delete("/:id", catchAsync(deleteUser));
 userRoutes.put("/update-password/:id", catchAsync(updatePassword));
 

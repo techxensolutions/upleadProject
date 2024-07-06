@@ -72,7 +72,7 @@ export default function PricingDetail() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 h-full gap-5 mt-5">
-          {cardContent.map((item, index) => (
+          {cardContent?.map((item, index) => (
             <div key={index} className="">
               {/* <h5 className="bg-[#F6F8F9] rounded-md py-2 font-medium text-center">
                 {item.heading}
@@ -143,7 +143,7 @@ export default function PricingDetail() {
                     >
                       {item.servicePkg}
                     </h5>
-                    {Object.keys(item).map((key, index) => {
+                    {Object.keys(item)?.map((key, index) => {
                       if (key.startsWith("list")) {
                         return (
                           <>

@@ -16,13 +16,12 @@ import ErrorBlock from "@/SharedComponents/ErrorBlock";
 import DeleteModal from "@/SharedComponents/DeleteModal";
 import { List } from "@mui/material";
 export default function DashboardContact() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [searchData, setSearchData] = useState({
     name: "",
   });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState({ id: "", name: "" });
-
+  const [allFormtData, setAllFormData] = useState([]);
   const {
     isFetching,
     data: getAllForm,
@@ -30,6 +29,11 @@ export default function DashboardContact() {
     error,
   } = api.adminApis.useGetAllFormSubmissionsQuery("");
 
+  useEffect(() => {
+    if (getAllForm) {
+      setAllFormData(getAllForm);
+    }
+  }, [getAllForm]);
   const [
     deleteTrigger,
     {
@@ -38,7 +42,7 @@ export default function DashboardContact() {
       isSuccess: isDeleteSuccess,
       reset,
     },
-  ] = api.adminApis.useDeletePropertyMutation();
+  ] = api.adminApis.useDeleteFormSubmissionMutation();
 
   const handleFilterTextInput = (e) => {
     e.preventDefault();
@@ -47,11 +51,12 @@ export default function DashboardContact() {
   };
 
   const initiateDelete = (item) => {
-    setItemToDelete({ id: item?.schoolId, name: `${item?.info?.name}` });
+    setItemToDelete({ id: item?._id, name: `${item?.fullName}` });
     setIsDeleteModalOpen(true);
   };
   const handleDelete = (id) => {
     deleteTrigger(id);
+    setAllFormData(allFormtData.filter((item) => item._id !== id));
   };
 
   const [page, setPage] = useState(1);
@@ -62,13 +67,13 @@ export default function DashboardContact() {
 
   const rowsPerPage = 6;
   const { items } = usePagination({
-    count: Math.ceil(getAllForm?.length / rowsPerPage),
+    count: Math.ceil(allFormtData?.length / rowsPerPage),
     onChange: (event, page) => handleChange(event, page),
     page: page,
   });
-  const filterData = (getAllForm, searchQuery) => {
-    if (!searchQuery) return getAllForm;
-    return getAllForm.filter((user) => {
+  const filterData = (allFormtData, searchQuery) => {
+    if (!searchQuery) return allFormtData;
+    return allFormtData.filter((user) => {
       const searchString =
         `${user.fullName} ${user.message} ${user.email}`.toLowerCase();
       return searchString.includes(searchQuery.toLowerCase());
@@ -111,29 +116,6 @@ export default function DashboardContact() {
                   />
                 </span>
               </label>
-
-              {/* <div className="lg:ml-auto">
-                <Link
-                  href="/adminPanel/property/add"
-                  className="bg-[#FF4512] max-w-max  flex flex-row font-medium items-center gap-1.5 rounded-lg px-6 py-2.5 shadow-md text-white mt-4"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M12 4.5v15m7.5-7.5h-15"
-                    />
-                  </svg>
-                  Add New Property
-                </Link>
-              </div> */}
             </div>
 
             <div className="flex w-full flex-row gap-x-4 md:gap-3 lg:gap-4 h-max"></div>
@@ -146,20 +128,23 @@ export default function DashboardContact() {
               <Table className="w-full" cellPadding={14}>
                 <TableHead className="w-full sticky top-0 border-b bg-white border-y-zinc-200">
                   <TableRow className="grid grid-cols-3 w-full md:table-row text-stone-600 font-[700]">
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       S/N
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Full Name
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Email
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Subject
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Message
+                    </TableCell>
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
+                      Action
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -167,25 +152,51 @@ export default function DashboardContact() {
                   <TableLoader cols={5} />
                 ) : (
                   <TableBody>
-                    {filterData(getAllForm, searchData.name)
+                    {filterData(allFormtData, searchData.name)
                       ?.slice((page - 1) * rowsPerPage, page * rowsPerPage)
                       .map((each, index) => (
                         <TableRow
                           key={index}
-                          className="text-slate-500  font-semi-bold"
+                          className="text-slate-500  font-semi-bold single-line-text"
                         >
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                         <TableCell>
+                          {(page - 1) * rowsPerPage + index + 1}
+                        </TableCell>
+                        
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.fullName}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.email}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.subject}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.message}
+                          </TableCell>
+                          <TableCell className="gap-1.5 lg:gap-2 xl:gap-2.5 single-line-text">
+                            <button
+                              onClick={() => initiateDelete(each)}
+                              className="!inline mx-1"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="21"
+                                height="20"
+                                viewBox="0 0 21 20"
+                                fill="none"
+                                className="!inline"
+                              >
+                                <path
+                                  d="M14.0003 4.99935V4.33268C14.0003 3.39926 14.0003 2.93255 13.8187 2.57603C13.6589 2.26243 13.4039 2.00746 13.0903 1.84767C12.7338 1.66602 12.2671 1.66602 11.3337 1.66602H10.0003C9.0669 1.66602 8.60019 1.66602 8.24367 1.84767C7.93007 2.00746 7.6751 2.26243 7.51531 2.57603C7.33366 2.93255 7.33366 3.39926 7.33366 4.33268V4.99935M9.00033 9.58268V13.7493M12.3337 9.58268V13.7493M3.16699 4.99935H18.167M16.5003 4.99935V14.3327C16.5003 15.7328 16.5003 16.4329 16.2278 16.9677C15.9882 17.4381 15.6057 17.8205 15.1353 18.0602C14.6005 18.3327 13.9005 18.3327 12.5003 18.3327H8.83366C7.43353 18.3327 6.73346 18.3327 6.19868 18.0602C5.72828 17.8205 5.34583 17.4381 5.10614 16.9677C4.83366 16.4329 4.83366 15.7328 4.83366 14.3327V4.99935"
+                                  stroke="#818181"
+                                  strokeWidth="1.66667"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                            </button>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -195,7 +206,7 @@ export default function DashboardContact() {
             </TableContainer>
             <div className=" !w-full">
               <List className="!flex-1 first-letter:flex items-center max-md:max-w-[calc(100vw-2.2rem)] w-[500px] bottom-4 bg-white mb-4 ml-auto  md:max-w-max rounded-md  mt-8 p-1">
-                {items.map(({ page, type, selected, ...item }, index) => {
+                {items?.map(({ page, type, selected, ...item }, index) => {
                   let children = null;
 
                   if (type === "start-ellipsis" || type === "end-ellipsis") {

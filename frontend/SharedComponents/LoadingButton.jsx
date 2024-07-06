@@ -1,4 +1,3 @@
-
 export default function LoadingButton({
   children,
   loading,
@@ -24,7 +23,7 @@ export default function LoadingButton({
         } absolute left-[50%] translate-x-[-20px] h-[18px] w-[40px] top-0 bottom-0 my-auto`}
       >
         <div
-          className={`animate-oscillate h-full w-[20px] !bg-[red] absolute translate-y-[-50%]`}
+          className={`animate-oscillate h-full w-[20px] !bg-[#00A0DF] absolute translate-y-[-50%]`}
         />
       </div>
       <span className={`${loading && "invisible"}`}>

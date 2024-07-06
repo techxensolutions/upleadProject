@@ -184,7 +184,7 @@ const ChangeSubscription = () => {
                 onChange={handlePlanChange}
                 className="text-neutral-500 w-full text-md leading-5 placeholder:text-neutral-400 border mt-1 px-3 py-2 rounded-md"
               >
-                {availablePlans.map((plan) => (
+                {availablePlans?.map((plan) => (
                   <option key={plan} value={plan}>
                     {plan}
                   </option>

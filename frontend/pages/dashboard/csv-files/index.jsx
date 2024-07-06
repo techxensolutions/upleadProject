@@ -31,7 +31,7 @@ export default function CsvFiles() {
     if (!isFetching && !isLoading) {
       setFileList(data);
     }
-  }, [data, isFetching, isLoading,pathname]);
+  }, [data, isFetching, isLoading, pathname]);
 
   const [
     deleteTrigger,
@@ -41,7 +41,7 @@ export default function CsvFiles() {
       isSuccess: isDeleteSuccess,
       reset,
     },
-  ] = api.adminApis.useDeletePropertyMutation();
+  ] = api.adminApis.useDeleteUserMutation();
 
   const handleFilterTextInput = (e) => {
     e.preventDefault();
@@ -152,22 +152,18 @@ export default function CsvFiles() {
               <Table className="w-full" cellPadding={14}>
                 <TableHead className="w-full sticky top-0 border-b bg-white border-y-zinc-200">
                   <TableRow className="grid grid-cols-3 w-full md:table-row text-stone-600 font-[700]">
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       S/N
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       File Name
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Url
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Access
                     </TableCell>
-
-                    {/* <TableCell className="text-stone-600 font-semibold">
-                      Actions
-                    </TableCell> */}
                   </TableRow>
                 </TableHead>
                 {isFetching ? (
@@ -179,84 +175,18 @@ export default function CsvFiles() {
                       .map((each, index) => (
                         <TableRow
                           key={index}
-                          className="text-slate-500  font-semi-bold"
+                          className="text-slate-500  font-semi-medium single-line-text"
                         >
                           <TableCell>{index + 1}</TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.filename}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.url}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.plans.join(", ")}
                           </TableCell>
-
-                          {/* <TableCell className="gap-1.5 lg:gap-2 xl:gap-2.5">
-                            <Link
-                              href={`/dashboard/csv-files/add?id=${each._id}&action=view`}
-                              className="!inline mx-1"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="21"
-                                height="20"
-                                viewBox="0 0 21 20"
-                                fill="none"
-                                className="!inline"
-                              >
-                                <path
-                                  d="M18.167 7.5L18.167 2.5M18.167 2.5H13.167M18.167 2.5L11.5003 9.16667M9.00033 4.16667H7.16699C5.76686 4.16667 5.0668 4.16667 4.53202 4.43915C4.06161 4.67883 3.67916 5.06129 3.43948 5.53169C3.16699 6.06647 3.16699 6.76654 3.16699 8.16667V13.5C3.16699 14.9001 3.16699 15.6002 3.43948 16.135C3.67916 16.6054 4.06161 16.9878 4.53202 17.2275C5.0668 17.5 5.76686 17.5 7.16699 17.5H12.5003C13.9005 17.5 14.6005 17.5 15.1353 17.2275C15.6057 16.9878 15.9882 16.6054 16.2278 16.135C16.5003 15.6002 16.5003 14.9001 16.5003 13.5V11.6667"
-                                  stroke="#818181"
-                                  strokeWidth="1.66667"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                            <Link
-                              href={`/dashboard/csv-files/add?id=${each._id}&action=update`}
-                              className="!inline mx-1"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="21"
-                                height="20"
-                                viewBox="0 0 21 20"
-                                fill="none"
-                                className="!inline"
-                              >
-                                <path
-                                  d="M3.06337 15.0973C3.10165 14.7527 3.1208 14.5804 3.17293 14.4194C3.21918 14.2765 3.28453 14.1405 3.3672 14.0152C3.46038 13.8739 3.58296 13.7513 3.82811 13.5061L14.8334 2.5009C15.7538 1.58043 17.2462 1.58043 18.1667 2.5009C19.0872 3.42138 19.0872 4.91376 18.1667 5.83424L7.16144 16.8395C6.91629 17.0846 6.79371 17.2072 6.65241 17.3004C6.52704 17.383 6.39108 17.4484 6.2482 17.4946C6.08717 17.5468 5.91488 17.5659 5.57031 17.6042L2.75 17.9176L3.06337 15.0973Z"
-                                  stroke="#818181"
-                                  strokeWidth="1.66667"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                            <button
-                              onClick={() => initiateDelete(each)}
-                              className="!inline mx-1"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="21"
-                                height="20"
-                                viewBox="0 0 21 20"
-                                fill="none"
-                                className="!inline"
-                              >
-                                <path
-                                  d="M14.0003 4.99935V4.33268C14.0003 3.39926 14.0003 2.93255 13.8187 2.57603C13.6589 2.26243 13.4039 2.00746 13.0903 1.84767C12.7338 1.66602 12.2671 1.66602 11.3337 1.66602H10.0003C9.0669 1.66602 8.60019 1.66602 8.24367 1.84767C7.93007 2.00746 7.6751 2.26243 7.51531 2.57603C7.33366 2.93255 7.33366 3.39926 7.33366 4.33268V4.99935M9.00033 9.58268V13.7493M12.3337 9.58268V13.7493M3.16699 4.99935H18.167M16.5003 4.99935V14.3327C16.5003 15.7328 16.5003 16.4329 16.2278 16.9677C15.9882 17.4381 15.6057 17.8205 15.1353 18.0602C14.6005 18.3327 13.9005 18.3327 12.5003 18.3327H8.83366C7.43353 18.3327 6.73346 18.3327 6.19868 18.0602C5.72828 17.8205 5.34583 17.4381 5.10614 16.9677C4.83366 16.4329 4.83366 15.7328 4.83366 14.3327V4.99935"
-                                  stroke="#818181"
-                                  strokeWidth="1.66667"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                />
-                              </svg>
-                            </button>
-                          </TableCell> */}
                         </TableRow>
                       ))}
                   </TableBody>

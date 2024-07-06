@@ -34,7 +34,7 @@ export default function DashboardPage({ children }) {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-[100vh]">
-        <div className="rounded-md h-12 w-12 border-4 border-t-4 border-[#00A0DF] animate-spin absolute"></div>
+        <div className="rounded-md h-12 w-12 border-4 border-t-4 border-[#00A0DFad] animate-spin absolute"></div>
       </div>
     );
   }
@@ -43,12 +43,7 @@ export default function DashboardPage({ children }) {
     <div className="grid fixed w-full grid-cols-1 lg:grid-cols-[max-content_1fr]">
       <aside className="hidden lg:block max-w-[270px] w-[20vw] min-w-[250px] h-screen border border-r-zinc-100">
         <Link href="/" className="flex justify-center mt-3 items-center">
-          <Image
-            width={70}
-            height={70}
-            alt="Logo"
-            src="https://png.pngtree.com/png-vector/20230302/ourmid/pngtree-dashboard-line-icon-vector-png-image_6626604.png"
-          />
+          <Image width={170} height={150} alt="Logo" src="/logo1.png" />
         </Link>
         <NavList route={navRoutes} />
       </aside>

@@ -11,24 +11,33 @@ import Paper from "@mui/material/Paper";
 import usePagination from "@mui/material/usePagination";
 import TableLoader from "@/SharedComponents/TableLoader";
 import ErrorBlock from "@/SharedComponents/ErrorBlock";
-import DeleteModal from "@/SharedComponents/DeleteModal";
 import { List } from "@mui/material";
-import { useSearchParams } from "next/navigation";
-const index = () => {
+import { useRouter, useSearchParams } from "next/navigation";
+import CreateAndUpdateUserCsv from "../../../SharedComponents/CreateAndUpdateUserCsv";
+const searchQueries = () => {
+  const router = useRouter();
+  const [userId, setUserId] = useState(null);
   const [searchData, setSearchData] = useState({
     name: "",
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedQuery, setSelectedQuery] = useState(null);
   const searchParams = useSearchParams();
-  const userId = searchParams.get("id");
-
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (id) {
+      setUserId(id);
+    }
+  }, [searchParams]);
   const {
     data: searchQueries,
     isLoading,
     isFetching,
-    isError,
+    refetch,
     error,
-  } = api.adminApis.useGetUserSearchQueriesQuery(userId);
-  console.log("searchQueries", searchQueries);
+  } = api.adminApis.useGetUserSearchQueriesQuery(userId, {
+    skip: !userId,
+  });
 
   const handleFilterTextInput = (e) => {
     e.preventDefault();
@@ -54,9 +63,40 @@ const index = () => {
     onChange: (event, page) => handleChange(event, page),
     page: page,
   });
+  const handleButtonClick = (query) => {
+    setSelectedQuery({ ...query, userId });
+    setIsModalOpen(true);
+  };
+
+  const cancelForm = () => {
+    router.back();
+  };
   return (
     <DashboardPage>
       <main className="p-3 md:p-3 lg:p-4 xl:p-6">
+        <section className="mb-5">
+          <button
+            onClick={cancelForm}
+            type="button"
+            className="text-stone-600 w-max flex font-medium flex-row items-center gap-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
+            </svg>
+            Go Back
+          </button>
+        </section>
         <section className="flex flex-row gap-3  max-md:flex-wrap">
           <div className="right flex flex-col gap-3 lg:gap-4 w-full">
             <div className="flex w-full flex-col lg:flex-row gap-x-4 md:gap-3  lg:gap-4 h-max lg:items-center justify-between">
@@ -102,17 +142,23 @@ const index = () => {
               <Table className="w-full" cellPadding={14}>
                 <TableHead className="w-full sticky top-0 border-b bg-white border-y-zinc-200">
                   <TableRow className="grid grid-cols-3 w-full md:table-row text-stone-600 font-[700]">
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       S/N
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 text-lg font-semibold single-line-text">
                       Query
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Date
                     </TableCell>
-                    <TableCell className="text-stone-600 font-semibold">
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
                       Time
+                    </TableCell>
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
+                      Url
+                    </TableCell>
+                    <TableCell className="text-stone-600 font-semibold single-line-text">
+                      Action
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -127,15 +173,34 @@ const index = () => {
                           key={index}
                           className="text-slate-500  font-semi-bold"
                         >
-                          <TableCell>{index + 1}</TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell>
+                            {" "}
+                            {(page - 1) * rowsPerPage + index + 1}
+                          </TableCell>
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {each.query}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {new Date(each.date).toLocaleDateString()}
                           </TableCell>
-                          <TableCell className="text-zinc-600 tracking-wide font-medium">
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
                             {new Date(each.date).toLocaleTimeString()}
+                          </TableCell>
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
+                            {each.url || "Yet Not Uploaded"}
+                          </TableCell>
+                          <TableCell className="text-zinc-600 tracking-wide font-medium single-line-text">
+                            {each.url ? (
+                              "Uploaded Successfully"
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleButtonClick(each)}
+                                className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                              >
+                                Upload CSV
+                              </button>
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -234,9 +299,15 @@ const index = () => {
             <ErrorBlock error={error} />
           </div>
         </section>
+        <CreateAndUpdateUserCsv
+          modalOpen={isModalOpen}
+          setModalOpen={setIsModalOpen}
+          selectedQuery={selectedQuery}
+          refetch={refetch}
+        />
       </main>
     </DashboardPage>
   );
 };
 
-export default index;
+export default searchQueries;

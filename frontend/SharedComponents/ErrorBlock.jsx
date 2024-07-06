@@ -11,9 +11,7 @@ export default function ErrorBlock({ error, className, style }) {
       console.log(error);
       if (typeof window !== "undefined") {
         localStorage.removeItem("userToken");
-        router.push(
-          "/backoffice/sign-in?message=Previous_session_has_expired,_sign_in"
-        );
+        router.push("/login?message=Previous_session_has_expired,_sign_in");
       }
     }
     containerRef.current?.scrollIntoView({ behavior: "smooth" });

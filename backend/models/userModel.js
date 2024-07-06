@@ -35,10 +35,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
-  searchQueries: {
-    type: Array,
-    default: [],
-  },
+
+  searchQueries: [
+    {
+      query: String,
+      date: { type: Date, default: Date.now },
+      url: String,
+      csvId: { type: mongoose.Schema.Types.ObjectId, ref: "CsvFile" },
+    },
+  ],
   photo: {
     type: String,
   },

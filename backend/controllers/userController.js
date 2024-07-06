@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const { default: mongoose } = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 exports.register = async (req, res) => {
   try {
@@ -96,26 +97,6 @@ exports.login = async (req, res) => {
   }
 };
 
-//Done
-exports.logout = async (req, res) => {
-  try {
-    console.log("loguted");
-    res
-      .status(200)
-      .cookie("token", null, { expires: new Date(Date.now()), httpOnly: true })
-      .json({
-        success: true,
-        message: "Logged out",
-      });
-    console.log("loguted sucees");
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
 exports.saveSearchQuery = async (req, res) => {
   const { userId } = req.params;
   const { query } = req.body;
@@ -125,7 +106,11 @@ exports.saveSearchQuery = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    user.searchQueries.push({ query, date: new Date() });
+    user.searchQueries.push({
+      query,
+      date: new Date(),
+      _id: new mongoose.Types.ObjectId(),
+    });
     await user.save();
 
     res.status(200).json({ message: "Search query saved successfully" });
